@@ -41,8 +41,38 @@
 			    		</p>
 		        </div>
 		        <div class="reg">
-		        	<p class="mb-0"><a href="#" class="mr-2">Sign Up</a> <a href="#">Log In</a></p>
-		        </div>
+		        	{{-- <p class="mb-0"><a href="http://ejemplo-lw.test/register" class="mr-2">Registrarte</a> <a href="http://ejemplo-lw.test/login">Iniciar Sesion</a></p> --}}
+
+                    @if (Route::has('login'))
+
+                        @auth
+                        <p class="mb-0">
+                            <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Perfil</a>
+                            </p>
+                            {{--  <form method="POST" action="http://ejemplo-lw.test/logout" >
+                                <input type="hidden" name="_token" value="8yZYS77WD06RIqxwsFY8wlZHmCFNuEOyGbw8LXvs">
+                                <a class="text-sm text-gray-700 dark:text-gray-500 underline" href="http://ejemplo-lw.test/logout" @click.prevent="$root.submit();">Log Out</a>
+                            </form>
+                            --}}
+                            <form method="POST" action="http://ejemplo-lw.test/logout">  {{-- Cierre de sesion (Log Out) --}}
+                                @csrf
+
+                              <a class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition" href="http://ejemplo-lw.test/logout" onclick="event.preventDefault();
+                               this.closest('form').submit();">Log Out</a>
+                               </form>
+
+                        @else
+                        <p class="mb-0">
+                            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="mr-2">Register</a>
+                            @endif
+                        @endauth
+
+                    @endif
+                    </p>
+                </div>
 					</div>
 				</div>
 			</div>
