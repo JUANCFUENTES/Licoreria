@@ -1,6 +1,6 @@
 <x-layout>
     <link rel="stylesheet" href="{{ asset('css/tables.css') }}">
-    <a href="/productos/create">Registrar nuevo producto</a> <br>
+
 
     <table >
         <br>
@@ -34,5 +34,10 @@
     @endforeach
 
     </table>
+    <br>
+    <div style="text-align: center">
+    <button><a href="/productos/create">Registrar nuevo producto</a> <br> </button>
+    </div>
+    <br>
 
 </x-layout>

@@ -1,5 +1,6 @@
 <x-layout>
-    <h1>Informacion de producto</h1>
+    <link rel="stylesheet" href="{{ asset('css/tables.css') }}">
+    <h1 style="text-align: center">Informacion del producto</h1>
     <table>
         <tr>
             <th>ID</th>
@@ -18,4 +19,5 @@
         </tr>
 
     </table>
+    <br>
 </x-layout>

@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/' , [ProductoController::class, 'index']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
@@ -31,7 +29,7 @@ Route::get('formProductos',function(){
 } )->middleware('auth');
 */
 
-Route::resource('/productos',ProductoController::class);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
+Route::resource('/productos',ProductoController::class) ->except(['index']);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
 
 //Route::get('/productos',[ProductoController::class,'index']);
 //Route::get('/productos/create',[ProductoController::class,'create']);
