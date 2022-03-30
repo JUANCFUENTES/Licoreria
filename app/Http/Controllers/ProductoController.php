@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Producto;
+use App\Models\Sucursal;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class ProductoController extends Controller
 {
@@ -33,9 +34,10 @@ class ProductoController extends Controller
 
     public function create()
     {
-        return view('productos.formProductos');
+        $categorias=Categoria::all();
+        $sucursals=Sucursal::all();
+        return view('productos.formProductos', compact('categorias','sucursals'));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -47,20 +49,19 @@ class ProductoController extends Controller
         $request ->validate([
             'nombre' => 'required |min:5|max:255',
             'precio' => ['required'],
-            'existencias' => ['required'],
-            'categoria' => 'required |min:2',
+            'descripcion' => ['required'],
+            'contenido' => ['required'],
+            'categoria_id' => 'required',
+            'sucursal_id' => 'required' ,
+            'existencias' => 'required' ,
         ]);
 
+        //$request->merge(['user_id' => Auth::id()]); //Esto sirve para agregarle mas atributos
+        $producto = Producto::create($request->all()); //solo funciona si los nombres de las columnas corresponden a los nombres del formulario
 
-        $producto= new Producto(); //Se crea un objeto
-        //Se le asigna la informacion correspondiente a cada campo del parametro que se paso
-        $producto->nombre = $request ->nombre;
-        $producto->precio = $request ->precio;
-        $producto->existencias = $request ->existencias;
-        $producto->categoria =  $request ->categoria;
-        $producto ->save(); //Se guarda en la base de datos
+        $producto->sucursals()->attach($request->sucursal_id,['existencias' => $request->existencias, 'created_at' => now(), 'updated_at' => now()]);
 
-        return redirect('/productos'); //redirecciona al index
+        return redirect('/'); //redirecciona al index
     }
 
     /**
@@ -82,7 +83,9 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        return view('productos.formProductos', compact('producto'));
+        $sucursals=Sucursal::all();
+        $categorias=Categoria::all();
+        return view('productos.formProductos', compact('producto', 'categorias','sucursals'));
     }
 
     /**
@@ -97,19 +100,19 @@ class ProductoController extends Controller
         $request ->validate([
             'nombre' => 'required |min:5|max:255',
             'precio' => ['required'],
-            'existencias' => ['required'],
-            'categoria' => 'required |min:2',
+            'descripcion' => ['required'],
+            'contenido' => ['required'],
+            'categoria_id' => 'required',
+            'sucursal_id' => 'required' ,
+            'existencias' => 'required' ,
         ]);
+        Producto::where('id', $producto->id)->update($request->except(['_token','_method','sucursal_id','existencias']));
 
-        $producto->nombre = $request ->nombre;
-        $producto->precio = $request ->precio;
-        $producto->existencias = $request ->existencias;
-        $producto->categoria =  $request ->categoria;
-        $producto ->save();
-
-        return redirect('/productos');
+        $producto->sucursals()->sync([
+            $request->sucursal_id =>['existencias' => $request->existencias]
+        ]);
+        return redirect('/');
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -119,6 +122,6 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         $producto->delete();
-        return redirect('/productos');
+        return redirect('/');
     }
 }

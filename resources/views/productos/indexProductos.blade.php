@@ -7,8 +7,8 @@
         <tr>
             <th>ID</th>
             <th>Nombre</th>
+            <th>Contenido</th>
             <th>Precio</th>
-            <th>Existencias</th>
             <th>Categoria</th>
             <th>Acciones</th>
         </tr>
@@ -17,9 +17,9 @@
         <tr>
             <td>{{ $producto->id }}</td>
             <td>{{ $producto->nombre }}</td>
+            <td>{{ $producto->contenido }}</td>
             <td>${{ $producto->precio }}</td>
-            <td>{{ $producto->existencias }}</td>
-            <td>{{ $producto->categoria }}</td>
+            <td>{{ $producto->categoria->nombre_categoria }}</td> {{-- Ejemplo de JOIN --}}
             <td>
                 <a href="productos/{{ $producto->id }}">Ver Detalle</a> <br>
                 <a href="productos/{{ $producto->id }}/edit">Editar</a> <br>
