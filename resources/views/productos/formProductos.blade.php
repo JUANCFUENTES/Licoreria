@@ -1,4 +1,6 @@
 <x-layout>
+
+<div style="text-align: center">
     <h1>Registra un producto</h1>
 
     <!-- Validacion  -->
@@ -73,7 +75,7 @@
         </select>
         <br> <br>
 
-        {{-- Tabla pivote --}}
+        {{-- Tabla pivote
         <label for="existencias">Existencias</label> <br>
         @if (isset($producto))
                 @foreach ($producto->sucursals as $data)
@@ -95,7 +97,10 @@
             @endforeach
 
         </select>
-        <br><br>
+        --}}
         <input type="submit" value="Guardar">
+
     </form>
+    <br>
+</div>
 </x-layout>

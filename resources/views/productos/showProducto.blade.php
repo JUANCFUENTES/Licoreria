@@ -21,8 +21,15 @@
             <td>{{ $producto->categoria->nombre_categoria }}</td>
             <td>
                 @foreach ($producto->sucursals as $data)
-                    {{ $data->domicilio }} =>
-                    {{ $data->pivot->existencias }} <br>
+
+                    <form action="/stock/{{ $producto->id}}/{{ $data->id}}/edit" method="POST">
+                        @csrf
+                        @method('GET')
+                        {{ $data->domicilio }} =>
+                        {{ $data->pivot->existencias }}
+                        <input type="submit" value="Actualizar">
+                    </form> <br>
+
                 @endforeach
             </td>
         </tr>

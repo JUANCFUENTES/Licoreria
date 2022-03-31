@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProductoSucursalController;
+use App\Models\Producto;
+use App\Models\Producto_Sucursal;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,9 +32,10 @@ Route::get('formProductos',function(){
 } )->middleware('auth');
 */
 
+
 Route::resource('/productos',ProductoController::class) ->except(['index']);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
 
-//Route::get('/productos',[ProductoController::class,'index']);
-//Route::get('/productos/create',[ProductoController::class,'create']);
 
+Route::get('/stock/{producto}/{sucursal}/edit',[ProductoSucursalController::class,'edit'])->middleware('auth');;
+Route::get('/stock/{producto}/{sucursal}',[ProductoSucursalController::class, 'update'])->middleware('auth');;
 

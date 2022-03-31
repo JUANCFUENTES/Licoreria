@@ -52,14 +52,18 @@ class ProductoController extends Controller
             'descripcion' => ['required'],
             'contenido' => ['required'],
             'categoria_id' => 'required',
-            'sucursal_id' => 'required' ,
-            'existencias' => 'required' ,
+            //'sucursal_id' => 'required' ,
+            //'existencias' => 'required' ,
         ]);
 
         //$request->merge(['user_id' => Auth::id()]); //Esto sirve para agregarle mas atributos
         $producto = Producto::create($request->all()); //solo funciona si los nombres de las columnas corresponden a los nombres del formulario
 
-        $producto->sucursals()->attach($request->sucursal_id,['existencias' => $request->existencias, 'created_at' => now(), 'updated_at' => now()]);
+        $sucursals=Sucursal::all();
+
+        foreach($sucursals as $sucursal){
+            $producto->sucursals()->attach($sucursal->id, ['existencias' => 0, 'created_at' => now(), 'updated_at' => now()]);
+        }
 
         return redirect('/'); //redirecciona al index
     }
@@ -88,6 +92,7 @@ class ProductoController extends Controller
         return view('productos.formProductos', compact('producto', 'categorias','sucursals'));
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -103,14 +108,14 @@ class ProductoController extends Controller
             'descripcion' => ['required'],
             'contenido' => ['required'],
             'categoria_id' => 'required',
-            'sucursal_id' => 'required' ,
-            'existencias' => 'required' ,
+            //'sucursal_id' => 'required' ,
+            //'existencias' => 'required' ,
         ]);
-        Producto::where('id', $producto->id)->update($request->except(['_token','_method','sucursal_id','existencias']));
+        Producto::where('id', $producto->id)->update($request->except(['_token','_method']));
 
-        $producto->sucursals()->sync([
+        /*$producto->sucursals()->sync([
             $request->sucursal_id =>['existencias' => $request->existencias]
-        ]);
+        ]);*/
         return redirect('/');
     }
     /**
