@@ -17,5 +17,6 @@ class SucursalsSeeder extends Seeder
     {
         Sucursal::create(['domicilio' => 'Paseo Andares','telefono' =>'1234567890','created_at' => now() , 'updated_at' => now(), ]);
        Sucursal::create(['domicilio' => 'El Briseño', 'telefono' =>'1234567888','created_at' => now() , 'updated_at' => now(),] );
+       Sucursal::create(['domicilio' => 'Bugambilias', 'telefono' =>'1234555888','created_at' => now() , 'updated_at' => now(),] );
     }
 }

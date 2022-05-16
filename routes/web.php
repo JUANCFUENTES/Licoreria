@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProductoSucursalController;
 use App\Models\Producto;
@@ -36,6 +37,12 @@ Route::get('formProductos',function(){
 Route::resource('/productos',ProductoController::class) ->except(['index']);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
 
 
-Route::get('/stock/{producto}/{sucursal}/edit',[ProductoSucursalController::class,'edit'])->middleware('auth');;
-Route::get('/stock/{producto}/{sucursal}',[ProductoSucursalController::class, 'update'])->middleware('auth');;
+Route::get('/stock/{producto}/{sucursal}/edit',[ProductoSucursalController::class,'edit'])->middleware('verified');
+Route::get('/stock/{producto}/{sucursal}',[ProductoSucursalController::class, 'update'])->middleware('verified');
+
+Route::get('enviar-reporte',[ProductoController::class,'enviarReporte']);
+
+Route::post('archivo',[ArchivoController::class, 'store'])->name('archivo.store');
+
+Route::delete('archivo/{archivo}',[ArchivoController::class, 'destroy'])->name('archivo.destory');
 

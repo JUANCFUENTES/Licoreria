@@ -6,6 +6,7 @@ use App\Models\Producto_Sucursal;
 use App\Models\Producto;
 use App\Models\Sucursal;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Location;
 
 class ProductoSucursalController extends Controller
 {
@@ -26,8 +27,7 @@ class ProductoSucursalController extends Controller
      */
     public function create()
     {
-        $sucursals=Sucursal::all();
-        return view('stock',compact('sucursals'));
+
     }
 
     /**
@@ -80,7 +80,8 @@ class ProductoSucursalController extends Controller
             $request->sucursal_id =>['existencias' => $request->existencias]
         ]);
 
-        return redirect('/');
+        //return redirect('/');
+        return redirect()->route('productos.show',$producto->id);
     }
 
     /**

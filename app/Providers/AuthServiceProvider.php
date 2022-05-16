@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Team;
+use App\Models\User;
 use App\Policies\TeamPolicy;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,6 +29,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        //Reglas
+        Gate::define('Aministra', function (User $user) { //Primer parametero es el nombre de tu regla
+            return false
+            ? Response::allow()
+            : Response::deny('Debes ser administrador'); //Mensaje que se mostrara al usuario
+        });
     }
 }

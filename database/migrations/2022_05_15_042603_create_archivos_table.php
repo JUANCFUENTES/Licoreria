@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('producto_sucursal', function (Blueprint $table) {
-            $table->foreignId('sucursal_id')->constrained()->onDelete('cascade');
+        Schema::create('archivos', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('producto_id')->constrained()->onDelete('cascade');
-            $table->integer('existencias');
+            $table->string('nombre');
+            $table->string('nombre_hash');
+            $table->string('mime');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('producto__sucursal');
+        Schema::dropIfExists('archivos');
     }
 };

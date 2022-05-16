@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use  Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,5 +18,26 @@ class Producto extends Model
 
     public function sucursals(){
         return $this->belongsToMany(Sucursal::class)->withPivot('existencias')->withTimestamps();
+    }
+
+    public function archivos(){
+        return $this->hasMany(Archivo::class);
+    }
+
+   /* protected function nombre(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ucfirst($value),
+        );
+    }*/
+
+    /*public function getnombreAttribute(){
+        return ucfirst($this->nombre);
+    } */
+    protected function nombre(): Attribute  //Accessors, Muttators
+    {
+        return Attribute::make(
+            set: fn ($value) => ucfirst(strtolower($value)),  //Guardar un dato inciando con mayuscula en la BD
+        );
     }
 }

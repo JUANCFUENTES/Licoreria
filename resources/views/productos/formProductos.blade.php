@@ -75,6 +75,7 @@
         </select>
         <br> <br>
 
+
         {{-- Tabla pivote
         <label for="existencias">Existencias</label> <br>
         @if (isset($producto))
