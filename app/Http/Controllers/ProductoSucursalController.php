@@ -10,6 +10,7 @@ use phpDocumentor\Reflection\Location;
 
 class ProductoSucursalController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -60,6 +61,7 @@ class ProductoSucursalController extends Controller
      */
     public function edit(Producto $producto, Sucursal $sucursal)
     {
+        $this->authorize('update',$producto);
         return view('stock',compact('producto','sucursal'));
     }
 
@@ -72,6 +74,7 @@ class ProductoSucursalController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
+        $this->authorize('update',$producto);
         $request ->validate([
         'existencias' => 'required |integer ' ,
         ]);
@@ -80,8 +83,10 @@ class ProductoSucursalController extends Controller
             $request->sucursal_id =>['existencias' => $request->existencias]
         ]);
 
-        //return redirect('/');
-        return redirect()->route('productos.show',$producto->id);
+        return redirect()->route('productos.show',$producto->id)
+        ->with([
+            'mensaje' => '¡Existencias Actualizadas!',
+        ]);
     }
 
     /**

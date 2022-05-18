@@ -24,16 +24,7 @@ class Producto extends Model
         return $this->hasMany(Archivo::class);
     }
 
-   /* protected function nombre(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => ucfirst($value),
-        );
-    }*/
 
-    /*public function getnombreAttribute(){
-        return ucfirst($this->nombre);
-    } */
     protected function nombre(): Attribute  //Accessors, Muttators
     {
         return Attribute::make(

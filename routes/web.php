@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/' , [ProductoController::class, 'index']);
+
+Route::get('/',[ProductoController::class, 'home']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
@@ -33,8 +34,17 @@ Route::get('formProductos',function(){
 } )->middleware('auth');
 */
 
+Route::get('about',function(){
+    return view('productos.aboutProductos');
+})->name('about');
 
-Route::resource('/productos',ProductoController::class) ->except(['index']);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
+//Route::get('contact',[ProductoController::class,'contact']);
+
+Route::get('contact',function(){
+    return view('productos.contactProductos');
+} );
+
+Route::resource('/productos',ProductoController::class)->except(['home']);  //Llama a todos los metodos del controlador tipo -r, que equivale a las lineas siguientes
 
 
 Route::get('/stock/{producto}/{sucursal}/edit',[ProductoSucursalController::class,'edit'])->middleware('verified');
@@ -42,7 +52,7 @@ Route::get('/stock/{producto}/{sucursal}',[ProductoSucursalController::class, 'u
 
 Route::get('enviar-reporte',[ProductoController::class,'enviarReporte']);
 
-Route::post('archivo',[ArchivoController::class, 'store'])->name('archivo.store');
+Route::post('archivo',[ArchivoController::class, 'store'])->name('archivo.store')->middleware('verified');
 
-Route::delete('archivo/{archivo}',[ArchivoController::class, 'destroy'])->name('archivo.destory');
+Route::delete('archivo/{archivo}',[ArchivoController::class, 'destroy'])->name('archivo.destory')->middleware('verified');
 

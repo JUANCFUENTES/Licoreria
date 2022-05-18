@@ -1,32 +1,37 @@
 <x-layout>
     <link rel="stylesheet" href="{{ asset('css/tables.css') }}">
 
-    <a href="/enviar-reporte">Enviar Correo con Reporte de Productos</a>
 
-    <table >
-        <br>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Contenido</th>
-            <th>Precio</th>
-            <th>Categoria</th>
-            <th>Acciones</th>
-        </tr>
+    <div class="container">
 
-    @foreach ($productos as $producto )
-        <tr>
+        <a href="/enviar-reporte">Enviar Correo con Reporte de Productos</a>
 
-            <td>{{ $producto->id }}</td>
-            <td>{{ $producto->nombre }}</td>
-            <td>{{ $producto->contenido }}</td>
-            <td>${{ $producto->precio }}</td>
-            <td>{{ $producto->categoria->nombre_categoria }}</td> {{-- Ejemplo de JOIN --}}
-            <td>
+        <div class="row">
+
+        @foreach ($productos as $producto )
+        <div class="card" style="width: 18rem; background:bisque; margin:auto">
+
+            @if (empty($producto->archivos->first()))
+            <img src="..." class="card-img-top" alt="...">
+            @else
+            <img src="data:image/jpeg;base64,{{ base64_encode(\Storage::get($producto->archivos->first()->nombre_hash)) }}" alt="">
+            @endif
+
+
+            <div class="card-body">
+              <h5 class="card-title">{{ $producto->nombre }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">{{ $producto->contenido }}</li>
+              <li class="list-group-item">{{ $producto->categoria->nombre_categoria }}</li>
+              <li class="list-group-item">${{ $producto->precio }}</li>
+            </ul>
+            <div class="card-body">
+
                 <a href="productos/{{ $producto->id }}">Ver Detalle</a> <br>
 
                 @can('update',$producto)
-                <a href="productos/{{ $producto->id }}/edit">Editar</a> <br>
+                <a href="productos/{{ $producto->id }}/edit">Editar</a>
                 @endcan
 
                 @can('delete',$producto)
@@ -37,12 +42,16 @@
                 </form>
                 @endcan
 
-            </td>
+            </div>
+          </div>
 
-        </tr>
-    @endforeach
+          @endforeach
 
-    </table>
+        </div>
+    </div>
+
+    <br> <br>
+
     <br>
     <div style="text-align: center">
         @can('create', App\Models\Producto::class)

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\Reporte;
+use App\Mail\ReporteMd;
 use App\Models\Categoria;
 use App\Models\Producto;
 use App\Models\Sucursal;
@@ -16,7 +16,7 @@ class ProductoController extends Controller
 {
     public function __construct(){
         //$this->middleware('auth')->only('store','destoy'); Solo aplica a los metodos mencionado
-        $this->middleware('verified')->except('index', 'show'); //Aplica a todos los metodos excepto a los metodos mencionado
+        $this->middleware('verified')->except('index', 'show','home'); //Aplica a todos los metodos excepto a los metodos mencionado
     }
 
     /**
@@ -24,10 +24,17 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function home(){
+        $productos=Producto::with('categoria:id,nombre_categoria')->with('archivos')->get(); //(Eager loading)
+        return view('productos.homeProductos', compact('productos'));
+    }
+
+
     public function index()
     {
         //$productos= Producto::all();
-       $productos= Producto::with('categoria:id,nombre_categoria')->get();  //Reducir las sentencias sql
+       $productos= Producto::with('categoria:id,nombre_categoria')->with('archivos')->get();  //Reducir las sentencias sql (Eager loading)
         return view('productos.indexProductos', compact('productos'));
     }
 
@@ -42,8 +49,7 @@ class ProductoController extends Controller
         $this->authorize('create',Producto::class); //Primer parametro es el nombre del metodo de nuestra policy
 
         $categorias=Categoria::all();
-        $sucursals=Sucursal::all();
-        return view('productos.formProductos', compact('categorias','sucursals'));
+        return view('productos.formProductos', compact('categorias'));
     }
     /**
      * Store a newly created resource in storage.
@@ -57,7 +63,7 @@ class ProductoController extends Controller
 
         $request ->validate([
             'nombre' => 'required |min:5|max:255',
-            'precio' => ['required'],
+            'precio' => 'required |numeric|min:0',
             'descripcion' => 'required |min:5|max:255',
             'contenido' => ['required'],
             'categoria_id' => 'required',
@@ -72,7 +78,7 @@ class ProductoController extends Controller
             $producto->sucursals()->attach($sucursal->id, ['existencias' => 0, 'created_at' => now(), 'updated_at' => now()]);
         }
 
-        return redirect('/') //redirecciona al index
+        return redirect('/productos') //redirecciona al index
         ->with([
             'mensaje' => '¡Producto Agregado!',
             'alert-type' => 'alert-success',
@@ -87,8 +93,6 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-
-
         return view('productos.showProducto',compact('producto'));
     }
 
@@ -102,10 +106,8 @@ class ProductoController extends Controller
     {
         $this->authorize('update',$producto); //Primer parametro es el nombre del metodo de nuestra policy
 
-
-        $sucursals=Sucursal::all();
         $categorias=Categoria::all();
-        return view('productos.formProductos', compact('producto', 'categorias','sucursals'));
+        return view('productos.formProductos', compact('producto', 'categorias'));
     }
 
 
@@ -123,17 +125,15 @@ class ProductoController extends Controller
 
         $request ->validate([
             'nombre' => 'required |min:5|max:255',
-            'precio' => ['required'],
+            'precio' => 'required |numeric|min:0',
             'descripcion' => 'required |min:5|max:255',
             'contenido' => ['required'],
             'categoria_id' => 'required',
         ]);
         Producto::where('id', $producto->id)->update($request->except(['_token','_method']));
 
-        /*$producto->sucursals()->sync([
-            $request->sucursal_id =>['existencias' => $request->existencias]
-        ]);*/
-        return redirect('/')
+
+        return redirect('/productos')
         ->with([
             'mensaje' => 'Actualizacion exitosa',
             'alert-type' => 'alert-success',
@@ -149,25 +149,22 @@ class ProductoController extends Controller
     {
         $this->authorize('delete',$producto); //Primer parametro es el nombre del metodo de nuestra policy
 
-        foreach($producto->archivos() as $archivo){
-            //Storage::delete($archivo->nombre_hash);
-
+        foreach($producto->archivos as $archivo){
+            Storage::delete($archivo->nombre_hash);
         }
 
-       /* $producto->delete();
-        return redirect('/')
+        $producto->delete();
+
+        return redirect('/productos')
         ->with([
             'mensaje' => 'Producto eliminado',
             'alert-type' => 'alert-danger',
-        ]);*/
-
-        //return redirect('prueba',compact($producto->id));
-        return redirect()->route('prueba',$producto->id);
+        ]);
     }
 
 
     public function enviarReporte(){
-        Mail::to(Auth::user()->email)->send(new Reporte());
+        Mail::to(Auth::user()->email)->send(new ReporteMd());
         return redirect()->back();
     }
 

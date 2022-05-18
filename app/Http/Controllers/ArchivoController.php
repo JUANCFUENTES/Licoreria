@@ -13,9 +13,10 @@ class ArchivoController extends Controller
         $this->authorize('create',Archivo::class); //Primer parametro es el nombre del metodo de nuestra policy
 
         $request ->validate([
-            'archivos' => 'required|max:2048'
+            'archivos.*' => 'required|max:2048 |image'
         ]);
 
+        if(isset($request->archivos)){
         foreach($request->archivos as $archivo){
             if($archivo->isValid()){
                 $nombre_hash = $archivo->store('productos');
@@ -26,8 +27,14 @@ class ArchivoController extends Controller
                 $registroArchivo->nombre_hash = $nombre_hash;
                 $registroArchivo->mime = $archivo->getClientMimeType();
                 $registroArchivo->save();
+                }
             }
         }
+        else{
+            return redirect()->route('productos.show',$request->producto_id)
+        ->with(['mensaje' => 'Selecciona por lo menos un archivo', 'alert-type' => 'alert-warning',]);
+        }
+
         return redirect()->route('productos.show',$request->producto_id)
         ->with(['mensaje' => 'Archivos cargados con exito']);
     }
@@ -39,6 +46,10 @@ class ArchivoController extends Controller
 
         $archivo->delete();
 
-        return redirect()->route('productos.show',$request->producto_id);
+        return redirect()->route('productos.show',$request->producto_id)
+        ->with([
+            'mensaje' => 'Archivo eliminado',
+            'alert-type' => 'alert-danger',
+        ]);
     }
 }

@@ -38,7 +38,7 @@
          @endforeach
 
         <label for="existencias">Existencias</label> <br>
-        <input type="number" name="existencias" value="{{ $existencias }}" min="0">
+        <input type="number" name="existencias" value="{{ $existencias }}" min="0" required>
         <br>
         <!-- Validacion -->
         @error('existencias')

@@ -1,39 +1,13 @@
 <x-layout>
     <link rel="stylesheet" href="{{ asset('css/tables.css') }}">
-    <h1 style="text-align: center">Informacion del producto</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Contenido</th>
-            <th>Precio</th>
-            <th>Categoria</th>
-            <th>Existencias</th>
-            <th>Imagenes</th>
-        </tr>
 
-        <tr>
-            <td>{{ $producto->id }}</td>
-            <td>{{ $producto->nombre }}</td>
-            <td>{{ $producto->descripcion }}</td>
-            <td>{{ $producto->contenido }}</td>
-            <td>${{ $producto->precio }}</td>
-            <td>{{ $producto->categoria->nombre_categoria }}</td>
-            <td>
-                @foreach ($producto->sucursals as $data)
-
-                    <form action="/stock/{{ $producto->id}}/{{ $data->id}}/edit" method="POST">
-                        @csrf
-                        @method('GET')
-                        {{ $data->domicilio }} =>
-                        {{ $data->pivot->existencias }}
-                        <input type="submit" value="Actualizar" class="btn btn-primary d-block" style="color: white">
-                    </form> <br>
-
-                @endforeach
-            </td>
-            <td>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5 ftco-animate">
+                <br>
+            @if (empty($producto->archivos->first()))
+                <img src="..." class="card-img-top" alt="...">
+            @else
                 @foreach ($producto->archivos as $archivo)
 
                 <form action="/archivo/{{ $archivo->id }}" method="POST">
@@ -50,12 +24,55 @@
 
                 <br> <br>
                 @endforeach
-            </td>
-        </tr>
+            @endif
+            </div>
+            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                <br> <br> <br> <br>
+                <h3>{{ $producto->nombre }}</h3>
+                <div class="rating d-flex">
+                        <p class="text-left mr-4">
+                            <a href="#" class="mr-2">5.0</a>
+                            <a href="#"><span class="fa fa-star"></span></a>
+                            <a href="#"><span class="fa fa-star"></span></a>
+                            <a href="#"><span class="fa fa-star"></span></a>
+                            <a href="#"><span class="fa fa-star"></span></a>
+                            <a href="#"><span class="fa fa-star"></span></a>
+                        </p>
+                </div>
+                <p>{{ $producto->contenido }}</p>
+                <p class="price"><span>${{ $producto->precio }}</span></p>
+                <p style="color: rgb(193, 84, 0)">{{ $producto->categoria->nombre_categoria }}</p> <br>
+                <p>{{ $producto->descripcion }}</p>
 
-    </table>
-    <br>
-        @can('create',$producto)
+
+
+
+            </div>
+            <div class="w-100"></div>
+                <div class="col-md-12">
+                  <h2>Existencias:</h2>
+                  @foreach ($producto->sucursals as $data)
+                    <div>
+                    <form action="/stock/{{ $producto->id}}/{{ $data->id}}/edit" method="POST">
+                        @csrf
+                        @method('GET')
+                        {{ $data->domicilio }} =>
+                        {{ $data->pivot->existencias }}
+
+                        @can('update',$producto)
+                        <input type="submit" value="Actualizar" class="btn btn-primary d-block" style="color: white">
+                        @endcan
+                    </form>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    @can('create',$producto)
         <div class="card text-center">
             <div class="card-header">
                 Subir Imagen:
@@ -65,7 +82,7 @@
                     @csrf
                  <input type="hidden" name="producto_id" value= "{{ $producto->id }}" >
 
-                    <input type="file"  value="Agregar imagen"  style="color: white" name="archivos[]"  multiple >
+                    <input type="file"  value="Agregar imagen"  style="color: white" name="archivos[]"  multiple  required>
 
                      <!-- Validacion -->
                       @error('archivos')

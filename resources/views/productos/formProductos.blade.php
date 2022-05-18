@@ -24,7 +24,7 @@
 
         @csrf
         <label for="nombre">Nombre del producto:</label> <br>
-        <input type="text" name="nombre" value="{{ isset($producto) ? $producto->nombre : old('nombre') }}"> <br>
+        <input type="text" name="nombre" value="{{ isset($producto) ? $producto->nombre : old('nombre') }}" required> <br>
 
         <!-- Validacion -->
         @error('nombre')
@@ -32,18 +32,9 @@
         @enderror
 
         <br>
-        <label for="descripcion">Descripcion:</label> <br>
-        <input type="text" name="descripcion" value="{{ isset($producto) ? $producto->descripcion : old('descripcion') }}">
-         <br>
 
-        <!-- Validacion -->
-        @error('descripcion')
-            <div class="alert alert-danger">{{ $message }}</div>
-        @enderror
-
-        <br>
         <label for="contenido">Contenido:</label> <br>
-        <input type="text" name="contenido" value="{{ isset($producto) ? $producto->contenido : old('contenido') }}">
+        <input type="text" name="contenido" value="{{ isset($producto) ? $producto->contenido : old('contenido') }}" required>
          <br>
 
         <!-- Validacion -->
@@ -53,11 +44,22 @@
 
         <br>
         <label for="precio">Precio:</label> <br>
-        <input type="text" name="precio" value="{{ isset($producto) ? $producto->precio : old('precio') }}">
+        <input type="number" name="precio" value="{{ isset($producto) ? $producto->precio : old('precio') }}" min="0" step="0.01" required>
          <br>
 
         <!-- Validacion -->
         @error('precio')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+
+        <br>
+
+        <label for="descripcion">Descripcion:</label> <br>
+        <textarea name="descripcion" required>{{ isset($producto) ? $producto->descripcion : old('descripcion') }}</textarea>
+         <br>
+
+        <!-- Validacion -->
+        @error('descripcion')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
 

@@ -8,11 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class Reporte extends Mailable
+class ReporteMd extends Mailable
 {
     use Queueable, SerializesModels;
     public $productos;
-
     /**
      * Create a new message instance.
      *
@@ -20,7 +19,7 @@ class Reporte extends Mailable
      */
     public function __construct()
     {
-         $this->productos = Producto::all();
+        $this->productos = Producto::all();
     }
 
     /**
@@ -30,6 +29,6 @@ class Reporte extends Mailable
      */
     public function build()
     {
-        return $this->view('mail.reporte');
+        return $this->markdown('mail.reportemd');
     }
 }
